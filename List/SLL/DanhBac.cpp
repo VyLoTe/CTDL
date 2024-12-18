@@ -2,7 +2,6 @@
 #include <string>
 using namespace std;
 
-#pragma region Contact
 class Contact
 {   
     string fax;
@@ -25,150 +24,99 @@ public:
         return os;
     }
     Contact() {}
-    // Contact(string fax, string name, string address) {
-    //     this->fax = fax;
-    //     this->name = name;
-    //     this->address = address;
-    // }
     Contact(string sdt, string ten, string diaChi) : fax(sdt), name(ten), address(diaChi) {}
     string getName() {
         return name;
     }
 };
-#pragma endregion
 
-#pragma region Node
+template <class T>
+
 class Node{
-    public:
-        Contact data;
-        Node *next = NULL;
-};
-#pragma endregion
-
-#pragma region DanhBa
-class danhBa{
     private:
-        Node *head;
+        T data;
+        Node<T> *next, *prev;
     public:
-        danhBa() : head(nullptr) {}
-        void addContact(const Contact& contact) {
-            Node* newNode = new Node(); 
-            newNode->data = contact;
-            newNode->next = head; // cho nó trỏ tới nút đầu
-            head = newNode; // cập nhật để nút mới trở thành nút đầu
+        Node(T Data, Node<T>* L=0, Node<T> *R=0) {
+            data = Data;next = R;prev = L;
         }
-        void deleteContact(const string& name) {
-            Node* current = head;
-            Node* previous = nullptr;
-
-            while(current != nullptr && current->data.getName() != name) {
-                previous = current; 
-                current = current->next;
-            }
-
-            if (current != nullptr) {
-                if (previous != nullptr) {
-                    previous->next = current->next; // xóa nút giữa hoặc cuối
-                }
-                else {
-                    head = current->next; // nút cần xóa là nút đầu
-                }
-                delete current;
-                cout << "contact having name: " << name << "has been deleted!\n";
-            }
+        T& getData() {return data;}
+        Node<T> *&getNext() {return next;}
+        Node<T> *&getPrev() {return prev;}
+        void setData(T Data) {data = Data;}
+        void setNext(Node<T> *temp=nullptr) {next = temp;}
+        void setPrev(Node<T> *temp=nullptr) {prev = temp;}
+};
+template <class T>
+class Iterator;
+template <class T>
+class Dlist {
+    Node<T> *head, *tail;
+    unsigned int num;
+    public:
+        Dlist() : head(nullptr), tail(nullptr), num(0) {}
+        Dlist(int n, T d) {
+            num = 0; head = tail = nullptr;
+            while(n--) push_back(d); 
+        }
+        void push_back(T d) {
+            if (num==0) head = tail = new Node<T>(d);
             else {
-                cout  << "contact having name: " << name << "does not exist!\n";
+                tail->setNext(new Node<T> (d, tail, 0));
             }
+            num++;
         }
-        void editContact(const string& name) {
-            Node* current = head;
-
-            while(current != nullptr) {
-                if (current->data.getName() == name) {
-                    cout << "Pls type your info again!\n";
-                    cin >> current->data;
-                    cout << "The info ontact has been changed\n";
-                    break;
-                }
-                current = current->next;
-                if (current == nullptr) {
-                    cout << "The contact does not exsit!\n";
-                    break;
-                }
+        void push_front(T d) {
+            if (num ==0 ) head = tail = new Node<T>(d);
+            else {
+                head->setPrev(new Node<T> (d, nullptr, head));
+                head = head->getPrev();
             }
-
-            // while (current != nullptr &&  current->data.getName() != name) {
-            //     current = current->next;
-            // }
+            num++;
+        }
+        void erase(T d) {
+            if (num==0) {
+                cout << "chua co du lieu de xoa!" << endl;
+                return;
+            }
             
-            // if (current != nullptr) {
-            //     cout << "Pls fill in your info again1:\n";
-            //     cin >> current->data;
-            //     cout << "The info contact has been changed\n";
-            // }
-            // else {
-            //     cout << "not found\n";
-            // }
-
         }
-        void searchContact(const string& name) {
-            Node* current = head;
-            // while (current != nullptr)
-            // {
-            //     if (current->data.setName() == name) {
-            //         cout << "The contact has been found\n";
-            //         cout << current->data;
-            //         break;
-            //     }
-            //     current = current->next;
-            //     if (current == nullptr) {
-            //         cout << "The contact does not exsit!\n";
-            //         break;
-            //     }
-            // }
+        typedef Iterator<T> iterator;
+        Iterator<T> begin() {return head;}
+        Iterator<T> end() {return NULL;}
+};
 
-            while (current != nullptr &&  current->data.getName() != name) {
-                current = current->next;
-            }
-            if (current != nullptr) {
-                cout << "The contact has been found\n";
-            }
-            else {
-                cout << "The contact does not exsit\n";
-            }
+template <class T>
+class Iterator {
+    Node<T> *cur;
+    public:
+        Iterator(Node<T> *p=nullptr) {cur = p;}
+        Node<T> *getCur() {return cur;}
+        T& operator*() {
+            return cur->getData();
         }
-
-        friend ostream& operator<<(ostream &os, const danhBa &danhba) {
-            Node* current = danhba.head;
-            while (current != nullptr) {
-                os << current->data;
-                current = current->next;
-            }
-            return os;
+        Iterator<T>& operator++() {
+            cur = cur->getNext();
+            return *this;
+        }
+        bool operator!=(const Iterator<T>& other) const{
+            return cur != other.cur;
+        }
+        bool operator==(const Iterator<T>& other) const{
+            return cur == other.cur;
         }
 };
-#pragma endregion
 
-#pragma region MENU
 int main()
 {
-    // ios_base::sync_with_stdio(false);
-    // cin.tie(NULL);
-
+    Dlist<Contact> quanLy;
     int choice;
-    danhBa danhba;
-    Contact contact;
-    string name;
-
     do {
         cout << "\033[1m====================================\033[0m\n";
         cout << "\033[1m          CONTACT MANAGER           \033[0m\n";
         cout << "\033[1m====================================\033[0m\n";
         cout << "\033[1m1. ADD A CONTACT\033[0m\n";
-        cout << "\033[1m2. DELETE A CONTACT\033[0m\n";
-        cout << "\033[1m3. MODIFY A CONTACT\033[0m\n";
-        cout << "\033[1m4. SEARCH A CONTACT\033[0m\n";
-        cout << "\033[1m5. PRINT CONTACT LIST\033[0m\n";
+        cout << "\033[1m2. PRINT CONTACT LIST\033[0m\n";
         cout << "\033[1m6. EXIT\033[0m\n";
         cout << "\033[1m====================================\033[0m\n";
         cout << "\033[1mEnter your choice: \033[0m";
@@ -178,35 +126,30 @@ int main()
         switch (choice)
         {
         case 1:
-            cin >> contact;
-            danhba.addContact(contact);
-            break;
-        case 2:
-            getline(cin, name);
-            danhba.deleteContact(name);
-            break;
-        case 3:
-            getline(cin, name);
-            danhba.editContact(name);
-            break;
-        case 4:
-            cin.ignore();
-            getline(cin, name);
-            danhba.searchContact(name);
-            break;
-        case 5:
-            cout << "The list of information contacts\n";
-            cout << danhba << '\n';
-            break;
-        case 6:
-            cout << "You've alreadly exited\n";
-            break;
-        default:
-            cout << "Invalid choice!\n";
+        {
+            cout << "nhap thong tin danh ba: "<<endl;
+            Contact ct; cin >> ct; // neu k sử dụng dấu {} thì qua các case khác ct vẫn hiển thị trong các case khác, nhưng chúng sẽ k dc khởi tạo 
+            cout << "Them vao sau (1), Them vao truoc(2): ";
+            int n; cin >> n;
+            if (n==1) {
+                quanLy.push_back(ct);
+            }
+            if (n==2) {
+                quanLy.push_front(ct);
+
+            }
             break;
         }
-    }while(choice != 6);
+        case 2:
+            cout << "in thong tin danh ba: " << endl;
+            for (Dlist<Contact>::iterator it = quanLy.begin(); it != quanLy.end(); ++it) {
+                cout << *it << endl;
+            }
+            break;
+        default:
+            cout << "option khong co: " << endl;
+            break;
+        }
+    }while(true);
 
-    return 0;
 }
-#pragma endregion

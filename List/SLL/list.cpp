@@ -7,10 +7,11 @@ class Node{
     public:
         T elem; 
         Node *next = NULL;      
+        Node () : elem(0), next(nullptr) {}
         Node(T e, Node *N) {
             elem = e;
             next = N;
-        }        
+        }       
 };
 
 int main() {

@@ -53,7 +53,7 @@ void postOrder(TreeNode<int> *root, string p = "\n") {
     cout << p << root->getElem();
 }
 #endif
-
+/* 
 int main() {
     TreeNode<int> *p = new TreeNode<int>(10);
     TreeNode<int> *A = new TreeNode<int> (20);
@@ -64,4 +64,4 @@ int main() {
     inOrder(p);
     postOrder(p);
     return 0;
-}
+} */

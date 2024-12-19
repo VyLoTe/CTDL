@@ -25,10 +25,22 @@ void BubbleSort(T *a, int n,bool (*comp)(T,T)) {
         }
     }
 }
+template <class T>
+void BubbleSort2(T *a, int n,bool (*comp)(T,T)) {
+    int i, j;
+    for (i = 0; i < n-1; ++i) {
+        for (j = n-1; j > i; --j) {
+            if (comp(a[j], a[j-1])) Swap(a[j], a[j-1]);
+        }
+    }
+}
 
 int main() {
     int a[] = {5, 1, 4, 2, 8, 9};
     int size = 6;
     BubbleSort(a, size, tang);
+    for (auto z : a) cout << z << ' ';
+    cout << endl;
+    BubbleSort2(a, size, tang);
     for (auto z : a) cout << z << ' ';
 }

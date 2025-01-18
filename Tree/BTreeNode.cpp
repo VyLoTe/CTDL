@@ -2,31 +2,27 @@
 using namespace std;
 
 template<class T>
-class BTreeNode
-{
+class BTreeNode {
+public:
+    BTreeNode() : Ele(T()), parent(nullptr), left(nullptr), right(nullptr) {}
+    BTreeNode (T Ele, BTreeNode *parent, BTreeNode *left, BTreeNode *right) {
+        this->Elele = Ele;
+        this->parent = parent;
+        this->rightright = right;
+        this->left = left;
+    }
+    void setEle(T ele) {Ele = ele;}
+    T getEle() {return Ele;}
 private:
     T Ele;
     BTreeNode *parent, *left, *right;
-public:
-    BTreeNode *parent, *left, *right;
-    BTreeNode() {Ele = 0; parent = left = right = NULL;}
-    BTreeNode (T Ele, BTreeNode *parent, BTreeNode *left, BTreeNode *right) {
-        Ele = Ele;
-        parent = parent;
-        right = right;
-        left = left;
-    }
-    void setEle(T ele) Ele = ele;
-    T getEle() return Ele;
 };
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
 
-    BTreeNode *A, *B, *C, *D, *E;
-    B = new BTreeNode();
+    BTreeNode<string> *A, *B, *C, *D, *E;
+    B = new BTreeNode<string>();
     B->setEle("B");
-    B->getEle();
+    cout << B->getEle();
     return 0;
 }

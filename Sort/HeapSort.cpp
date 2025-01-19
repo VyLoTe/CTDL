@@ -6,7 +6,7 @@ void Heapify(T* a, int i, int n) {
     int kt = 0;
     int max;
     int j = i;
-    while(kt ==0 && j <=n/2) 
+    while(kt == 0 && j <=n/2) 
     {
         if (n == 2*j) max = 2*j;
         else {
